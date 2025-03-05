@@ -11,6 +11,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	cr "go-banking-api/internal/customer/router"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,8 @@ import (
 )
 
 func SetupRoutes(e *echo.Echo, db *gorm.DB) {
+	customer := e.Group("/customers")
+	cr.CustomerRouter(customer, db)
 	
 }
 
