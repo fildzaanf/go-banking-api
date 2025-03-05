@@ -2,8 +2,8 @@ package response
 
 // Success
 type TResponseMeta struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
+	Status int    `json:"status"`
+	Remark string `json:"remark"` 
 }
 
 type TSuccessResponse struct {
@@ -11,19 +11,19 @@ type TSuccessResponse struct {
 	Results interface{}   `json:"results"`
 }
 
-func SuccessResponse(message string, data interface{}) interface{} {
+func SuccessResponse(status int, remark string, data interface{}) interface{} {
 	if data == nil {
 		return TErrorResponse{
 			Meta: TResponseMeta{
-				Success: true,
-				Message: message,
+				Status: status,
+				Remark: remark,
 			},
 		}
 	} else {
 		return TSuccessResponse{
 			Meta: TResponseMeta{
-				Success: true,
-				Message: message,
+				Status: status,
+				Remark: remark,
 			},
 			Results: data,
 		}
@@ -35,34 +35,33 @@ type TErrorResponse struct {
 	Meta TResponseMeta `json:"meta"`
 }
 
-func ErrorResponse(message string) interface{} {
+func ErrorResponse(status int, remark string) interface{} {
 	return TErrorResponse{
 		Meta: TResponseMeta{
-			Success: false,
-			Message: message,
+			Status: status,
+			Remark: remark,
 		},
 	}
 }
 
 // Pagination
 type TResponseMetaPage struct {
-	Success         bool   `json:"success"`
-	Message         string `json:"message"`
-	CurrentPage     int    `json:"current_page"`
-	TotalPages      int    `json:"total_pages"`
-	TotalItems      int    `json:"total_items"`
-	ItemsPerPage    int    `json:"items_per_page"`
-	HasNextPage     bool   `json:"has_next_page"`
-	HasPreviousPage bool   `json:"has_previous_page"`
+	Status         int    `json:"status"`
+	Remark         string `json:"remark"` 
+	CurrentPage    int    `json:"current_page"`
+	TotalPages     int    `json:"total_pages"`
+	TotalItems     int    `json:"total_items"`
+	ItemsPerPage   int    `json:"items_per_page"`
+	HasNextPage    bool   `json:"has_next_page"`
+	HasPreviousPage bool  `json:"has_previous_page"`
 }
-
 
 type TSuccessResponsePage struct {
 	Meta    TResponseMetaPage `json:"meta"`
 	Results interface{}       `json:"results"`
 }
 
-func SuccessResponsePage(message string, page int, limit int, totaldata int64, data interface{}) TSuccessResponsePage {
+func SuccessResponsePage(status int, remark string, page int, limit int, totaldata int64, data interface{}) TSuccessResponsePage {
 	totalPages := int(totaldata / int64(limit))
 	if totaldata % int64(limit) != 0 {
 		totalPages++
@@ -70,13 +69,13 @@ func SuccessResponsePage(message string, page int, limit int, totaldata int64, d
 
 	return TSuccessResponsePage{
 		Meta: TResponseMetaPage{
-			Success:         true,
-			Message:         message,
-			CurrentPage:     page,
-			TotalPages:      totalPages,
-			TotalItems:      int(totaldata),
-			ItemsPerPage:    limit,
-			HasNextPage:     page < totalPages,
+			Status:         status,
+			Remark:         remark,
+			CurrentPage:    page,
+			TotalPages:     totalPages,
+			TotalItems:     int(totaldata),
+			ItemsPerPage:   limit,
+			HasNextPage:    page < totalPages,
 			HasPreviousPage: page > 1,
 		},
 		Results: data,
