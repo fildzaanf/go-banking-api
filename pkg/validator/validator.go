@@ -3,10 +3,13 @@ package validator
 import (
 	"errors"
 	"fmt"
+	"log"
 	"reflect"
 	"regexp"
 	"strings"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func IsDataEmpty(fields []string, data ...interface{}) error {
@@ -109,7 +112,7 @@ func IsDateValid(date string) error {
 		return nil
 	}
 
-dateRegex := regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
+	dateRegex := regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 	if !dateRegex.MatchString(date) {
 		return errors.New("invalid date format. expected format: '2000-12-30'")
 	}
@@ -125,9 +128,23 @@ func IsNIKValid(nik string) error {
 }
 
 func IsPhoneNumberValid(phone string) error {
-	phoneRegex := regexp.MustCompile(`^\+?\d{10,15}$`)
+	phoneRegex := regexp.MustCompile(`^\+\d{10,15}$`)
 	if !phoneRegex.MatchString(phone) {
-		return errors.New("invalid phone number format. expected 10-15 digits, optionally starting with +")
+		return errors.New("invalid phone number format. expected format: +[country code] followed by 10-15 digits")
 	}
 	return nil
+}
+
+func CreateEnumIfNotExists(db *gorm.DB, enumName, values string) {
+	var exists bool
+	query := fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = '%s')", enumName)
+	db.Raw(query).Scan(&exists)
+
+	if !exists {
+		createEnumSQL := fmt.Sprintf("CREATE TYPE %s AS ENUM (%s)", enumName, values)
+		db.Exec(createEnumSQL)
+		log.Printf("Enum %s created successfully", enumName)
+	} else {
+		log.Printf("Enum %s already exists, skipping creation", enumName)
+	}
 }

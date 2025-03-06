@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
-	"go-banking-api/infrastructure/database"
 	"go-banking-api/infrastructure/config"
+	"go-banking-api/infrastructure/database"
+	ar "go-banking-api/internal/account/router"
+	cr "go-banking-api/internal/customer/router"
+	tr "go-banking-api/internal/transaction/router"
 	"go-banking-api/pkg/middleware"
 	"net/http"
 	"os"
@@ -11,7 +14,6 @@ import (
 	"sync"
 	"syscall"
 	"time"
-	cr "go-banking-api/internal/customer/router"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -22,7 +24,12 @@ import (
 func SetupRoutes(e *echo.Echo, db *gorm.DB) {
 	customer := e.Group("/customers")
 	cr.CustomerRouter(customer, db)
-	
+
+	account := e.Group("/accounts")
+	ar.AccountRouter(account, db)
+
+	transaction := e.Group("/transactions")
+	tr.TransactionRouter(transaction, db)
 }
 
 func main() {
