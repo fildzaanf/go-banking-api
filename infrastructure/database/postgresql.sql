@@ -10,7 +10,7 @@ CREATE TABLE customers (
 
 CREATE TABLE accounts (
     id VARCHAR(50) PRIMARY KEY,
-    customer_id VARCHAR(50) NOT NULL,
+    customer_id VARCHAR(50) NOT NULL UNIQUE,
     account_number VARCHAR(20) UNIQUE NOT NULL,
     balance DECIMAL(15,2) DEFAULT 0.00 NOT NULL,
     status account_status NOT NULL DEFAULT 'inactive', 
