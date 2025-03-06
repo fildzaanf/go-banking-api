@@ -8,7 +8,7 @@ services:
     depends_on:
       - postgres
     env_file:
-      - .env
+      - .env 
     environment:
       POSTGRESQL_USER: ${POSTGRESQL_USER}
       POSTGRESQL_PASS: ${POSTGRESQL_PASS}
@@ -30,14 +30,13 @@ services:
     image: postgres
     container_name: postgres-db
     env_file:
-      - .env
+      - .env 
     environment:
       POSTGRES_USER: ${POSTGRESQL_USER}
       POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
       POSTGRES_DB: ${POSTGRESQL_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+      - ./infrastructure/database/postgresql.sql:/docker-entrypoint-initdb.d/postgresql.sql
     ports:
       - "5433:5432"
     restart: unless-stopped
