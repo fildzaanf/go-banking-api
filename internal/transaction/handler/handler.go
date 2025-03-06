@@ -6,7 +6,6 @@ import (
 	"go-banking-api/pkg/constant"
 	"go-banking-api/pkg/middleware"
 	"go-banking-api/pkg/response"
-	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -37,11 +36,7 @@ func (th *transactionHandler) CreateTransactionDeposit(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response.ErrorResponse(http.StatusBadRequest, err.Error()))
 	}
 
-	log.Println("Deposit Request:", depositRequest)
-
 	transactionDomain := dto.TransactionDepositRequestToDomain(depositRequest)
-
-	log.Println("Transaction Domain:", transactionDomain)
 
 	CreateDeposit, err := th.transactionCommandService.CreateTransactionDeposit(transactionDomain, tokenCustomerID)
 	if err != nil {
