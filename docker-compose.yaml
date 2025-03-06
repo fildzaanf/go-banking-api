@@ -1,0 +1,52 @@
+services:
+  go-banking-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: go-banking-api
+    container_name: go-banking-api
+    depends_on:
+      - postgres
+    env_file:
+      - .env 
+    environment:
+      POSTGRESQL_USER: ${POSTGRESQL_USER}
+      POSTGRESQL_PASS: ${POSTGRESQL_PASS}
+      POSTGRESQL_NAME: ${POSTGRESQL_NAME}
+      POSTGRESQL_HOST: ${POSTGRESQL_HOST}
+      POSTGRESQL_PORT: "${POSTGRESQL_PORT}"
+      SERVER_HOST: ${SERVER_HOST}
+      SERVER_PORT: "${SERVER_PORT}"
+      JWT_SECRET: "${JWT_SECRET}"
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - .:/app
+
+  postgres:
+    image: postgres
+    container_name: postgres-db
+    env_file:
+      - .env 
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+      POSTGRES_DB: ${POSTGRESQL_NAME}
+    volumes:
+      - ./infrastructure/database/postgresql.sql:/docker-entrypoint-initdb.d/postgresql.sql
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

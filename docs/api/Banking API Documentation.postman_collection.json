@@ -1,0 +1,545 @@
+{
+	"info": {
+		"_postman_id": "9b5345d4-ab0f-4bbb-bb70-db006423d7a7",
+		"name": "Banking API Documentation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32514382"
+	},
+	"item": [
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"nik\": \"3201238697790071\",\n  \"phone_number\": \"+6281834559790\",\n  \"password\": \"SecurePassword123\",\n  \"confirm_password\": \"SecurePassword123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/customers/register",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"customers",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"nik\": \"3201238697790071\",\n  \"phone_number\": \"+6281834559790\",\n  \"password\": \"SecurePassword123\",\n  \"confirm_password\": \"SecurePassword123\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/customers/register",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"customers",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:11:08 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "103"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"register successfully\"\n    },\n    \"results\": {\n        \"account_number\": \"00896811210259\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Extract and use token from JSON response', function () {",
+									"    ",
+									"    var jsonResponse = pm.response.json();",
+									"    if (jsonResponse.results.hasOwnProperty('token')) {",
+									"        var token = jsonResponse.results.token;",
+									"        pm.environment.set('token', token);",
+									"    } else {",
+									"        console.error('Token not found in the JSON response.');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nik\": \"3201238697790071\",\n    \"phone_number\": \"+6281834559790\",\n    \"password\": \"SecurePassword123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/customers/login",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"customers",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nik\": \"3201238697790071\",\n    \"phone_number\": \"+6281834559790\",\n    \"password\": \"SecurePassword123\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/customers/login",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"customers",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:12:00 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "313"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"logged in successfully\"\n    },\n    \"results\": {\n        \"id\": \"6455f547-d1b6-463b-8b78-51ea2f92bf8e\",\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3NDEzMzUxMjAsImlkIjoiNjQ1NWY1NDctZDFiNi00NjNiLThiNzgtNTFlYTJmOTJiZjhlIn0.V_XrDXHDw2VsUypU6XpOjXIwlX4VNjph90SG-ZVsBIA\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get Account Balance",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/accounts/balance/:account_number",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"accounts",
+								"balance",
+								":account_number"
+							],
+							"variable": [
+								{
+									"key": "account_number",
+									"value": "00896811210259"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Account Balance",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/accounts/balance/:account_number",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"accounts",
+										"balance",
+										":account_number"
+									],
+									"variable": [
+										{
+											"key": "account_number",
+											"value": "00896811210259"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:21:33 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "92"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"data retrieved successfully\"\n    },\n    \"results\": {\n        \"balance\": \"7000\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Create Deposit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"account_number\": \"00896811210259\",\n  \"amount\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/transactions/deposit",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"transactions",
+								"deposit"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Deposit",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"account_number\": \"00896811210259\",\n  \"amount\": 7000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/transactions/deposit",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"transactions",
+										"deposit"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:20:35 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "96"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"deposit completed successfully.\"\n    },\n    \"results\": {\n        \"balance\": \"8000\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Withdrawal",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"account_number\": \"00896811210259\",\n  \"amount\": 1000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/transactions/withdrawal",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"transactions",
+								"withdrawal"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Withdrawal",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"account_number\": \"00896811210259\",\n  \"amount\": 1000\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/transactions/withdrawal",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"transactions",
+										"withdrawal"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:20:51 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "99"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"withdrawal completed successfully.\"\n    },\n    \"results\": {\n        \"balance\": \"7000\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/transactions",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get All Transactions",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/transactions",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"transactions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 06 Mar 2025 08:21:03 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1612"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"remark\": \"data retrieved successfully\"\n    },\n    \"results\": [\n        {\n            \"ID\": \"c6a693ca-3c1b-408b-8cff-45c672ef6fef\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"deposit\",\n            \"CreatedAt\": \"2025-03-06T15:13:30.600847+07:00\"\n        },\n        {\n            \"ID\": \"28378953-e5ec-49d8-a8da-046be027ec8e\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"deposit\",\n            \"CreatedAt\": \"2025-03-06T15:13:32.543994+07:00\"\n        },\n        {\n            \"ID\": \"5673aff9-6e8b-4ff8-bbf5-72f8d6ba5bf5\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"withdraw\",\n            \"CreatedAt\": \"2025-03-06T15:16:57.450734+07:00\"\n        },\n        {\n            \"ID\": \"559ed8ab-91b7-49cf-8ece-2a7f4147d54f\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1000\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"deposit\",\n            \"CreatedAt\": \"2025-03-06T15:19:58.648107+07:00\"\n        },\n        {\n            \"ID\": \"e8800613-b606-4e28-94ad-6b901248cc94\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"withdraw\",\n            \"CreatedAt\": \"2025-03-06T15:20:27.297979+07:00\"\n        },\n        {\n            \"ID\": \"2cd6d609-d2bf-4e32-b0b7-222f72877ea4\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"7000\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"deposit\",\n            \"CreatedAt\": \"2025-03-06T15:20:35.42595+07:00\"\n        },\n        {\n            \"ID\": \"89286e20-bcf8-4d3b-97e3-a61d58290a63\",\n            \"AccountID\": \"4a72de92-a9e3-431a-80a3-132f16bcb65f\",\n            \"Amount\": \"1000\",\n            \"AccountNumber\": \"00896811210259\",\n            \"TransactionType\": \"withdraw\",\n            \"CreatedAt\": \"2025-03-06T15:20:51.652134+07:00\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
