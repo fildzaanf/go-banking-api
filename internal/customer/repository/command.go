@@ -46,6 +46,7 @@ func (ccr *customerCommandRepository) RegisterCustomer(customer domain.Customer)
 
 	return customerDomain, nil
 }
+
 func (ccr *customerCommandRepository) LoginCustomer(NIK, phoneNumber, password string) (domain.Customer, error) {
 	var customerEntity entity.Customer
 

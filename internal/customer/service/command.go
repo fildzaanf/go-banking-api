@@ -2,28 +2,31 @@ package service
 
 import (
 	"errors"
-	"go-banking-api/internal/customer/domain"
 	da "go-banking-api/internal/account/domain"
+	repositoryAccount "go-banking-api/internal/account/repository"
+	"go-banking-api/internal/customer/domain"
 	"go-banking-api/internal/customer/repository"
-	repositoryAccount 	"go-banking-api/internal/account/repository"
 	"go-banking-api/pkg/constant"
 	"go-banking-api/pkg/crypto"
 	"go-banking-api/pkg/generator"
 	"go-banking-api/pkg/middleware"
 	"go-banking-api/pkg/validator"
+
+	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 type customerCommandService struct {
 	customerCommandRepository repository.CustomerCommandRepositoryInterface
 	customerQueryRepository   repository.CustomerQueryRepositoryInterface
-	accountCommandRepository repositoryAccount.AccountCommandRepositoryInterface
+	accountCommandRepository  repositoryAccount.AccountCommandRepositoryInterface
 }
 
 func NewCustomerCommandService(ccr repository.CustomerCommandRepositoryInterface, cqr repository.CustomerQueryRepositoryInterface, acr repositoryAccount.AccountCommandRepositoryInterface) CustomerCommandServiceInterface {
 	return &customerCommandService{
 		customerCommandRepository: ccr,
 		customerQueryRepository:   cqr,
-		accountCommandRepository: acr,
+		accountCommandRepository:  acr,
 	}
 }
 
@@ -66,18 +69,20 @@ func (ccs *customerCommandService) RegisterCustomer(customer domain.Customer) (s
 
 	accountNumber := generator.GenerateBankAccountNumber()
 
-
 	account := da.Account{
+		ID:            uuid.New().String(),
 		CustomerID:    customerEntity.ID,
 		AccountNumber: accountNumber,
+		Balance:       decimal.NewFromInt(0),
+		Status:        "active",
 	}
 
-	errCreateAccount := ccs.accountCommandRepository.CreateAccount(account)
+	account, errCreateAccount := ccs.accountCommandRepository.CreateAccount(account)
 	if errCreateAccount != nil {
 		return "", errCreateAccount
 	}
 
-	return accountNumber, nil
+	return account.AccountNumber, nil
 }
 
 func (ccs *customerCommandService) LoginCustomer(NIK, phoneNumber string, password string) (domain.Customer, string, error) {
@@ -92,8 +97,8 @@ func (ccs *customerCommandService) LoginCustomer(NIK, phoneNumber string, passwo
 	}
 
 	customerDomain, errGetCustomerNIK := ccs.customerQueryRepository.GetCustomerByNIK(NIK)
-	if errGetCustomerNIK == nil {
-		return domain.Customer{},"", errors.New("NIK already registered")
+	if errGetCustomerNIK != nil {
+		return domain.Customer{}, "", errors.New("NIK not registered")
 	}
 
 	errPhoneValid := validator.IsPhoneNumberValid(phoneNumber)
@@ -102,9 +107,9 @@ func (ccs *customerCommandService) LoginCustomer(NIK, phoneNumber string, passwo
 	}
 
 	customerDomain, errGetCustomerPhone := ccs.customerQueryRepository.GetCustomerByPhoneNumber(phoneNumber)
-    if errGetCustomerPhone == nil {
-        return domain.Customer{}, "", errors.New("phone number already registered")
-    }
+	if errGetCustomerPhone != nil {
+		return domain.Customer{}, "", errors.New("phone number not registered")
+	}
 
 	comparePassword := crypto.ComparePassword(customerDomain.Password, password)
 	if comparePassword != nil {

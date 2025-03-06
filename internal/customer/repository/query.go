@@ -40,3 +40,15 @@ func (cqr *customerQueryRepository) GetCustomerByPhoneNumber(phoneNumber string)
 	}
 	return customer, nil
 }
+
+func (cqr *customerQueryRepository) GetCustomerByID(id string) (domain.Customer, error) {
+	var customer domain.Customer
+	result := cqr.db.Where("id = ?", id).First(&customer)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return domain.Customer{}, errors.New("customer not found")
+		}
+		return domain.Customer{}, result.Error
+	}
+	return customer, nil
+}
