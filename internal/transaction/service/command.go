@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	da "go-banking-api/internal/account/domain"
 	repositoryAccount "go-banking-api/internal/account/repository"
 	customerRepository "go-banking-api/internal/customer/repository"
@@ -84,7 +85,7 @@ func (tcs *transactionCommandService) CreateTransactionWithdrawal(transaction do
 	}
 
 	if account.Balance.LessThan(transaction.Amount) {
-		return da.Account{}, errors.New("insufficient balance")
+		return da.Account{}, fmt.Errorf("insufficient balance: current balance is %v", account.Balance)
 	}
 
 	_, err = tcs.transactionCommandRepository.CreateTransaction(transaction)
