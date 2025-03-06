@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: go-banking-api
     container_name: go-banking-api
     depends_on:
       - postgres
