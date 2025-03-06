@@ -33,17 +33,21 @@ func SetupRoutes(e *echo.Echo, db *gorm.DB) {
 }
 
 func main() {
+
+	middleware.InitLogger()
+
 	godotenv.Load()
 	config, err := config.LoadConfig()
 	if err != nil {
-		logrus.Fatalf("failed to load configuration: %v", err)
+		logrus.Fatalf("[ERROR] failed to load configuration: %v", err)
 	}
 
 	pdb := database.ConnectPostgreSQL()
+
 	e := echo.New()
 
 	middleware.RemoveTrailingSlash(e)
-	middleware.Logger(e)
+	e.Use(middleware.Logger) 
 	middleware.RateLimiter(e)
 	middleware.Recover(e)
 	middleware.CORS(e)
@@ -52,17 +56,15 @@ func main() {
 
 	host := config.SERVER.SERVER_HOST
 	port := config.SERVER.SERVER_PORT
-
 	address := host + ":" + port
 
 	errChan := make(chan error, 1)
-
 	var wg sync.WaitGroup
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		logrus.Info("server is running on address ", address)
+		logrus.Info("[INFO] Server is running on address ", address)
 		if err := e.Start(address); err != nil && err != http.ErrServerClosed {
 			errChan <- err
 		}
@@ -75,24 +77,24 @@ func main() {
 		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 		<-quit
-		logrus.Warn("shutting down server...")
+		logrus.Warn("[WARN] Shutting down server...")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
 		if err := e.Shutdown(ctx); err != nil {
-			logrus.Errorf("error shutting down server: %v", err)
+			logrus.Errorf("[ERROR] Error shutting down server: %v", err)
 		}
 		close(errChan)
 	}()
 
 	select {
 	case err := <-errChan:
-		logrus.Fatalf("server error: %v", err)
+		logrus.Fatalf("[CRITICAL] Server error: %v", err)
 	case <-time.After(1 * time.Second):
-		logrus.Info("server is running smoothly...")
+		logrus.Info("[INFO] Server is running smoothly...")
 	}
 
 	wg.Wait()
-	logrus.Info("server has been shut down gracefully.")
+	logrus.Info("[INFO] Server has been shut down gracefully.")
 }
