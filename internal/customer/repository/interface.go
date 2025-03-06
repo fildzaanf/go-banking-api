@@ -12,4 +12,5 @@ type CustomerCommandRepositoryInterface interface {
 type CustomerQueryRepositoryInterface interface {
 	GetCustomerByNIK(nik string) (domain.Customer, error)
 	GetCustomerByPhoneNumber(phoneNumber string) (domain.Customer, error)
+	GetCustomerByID(id string) (domain.Customer, error)
 }
