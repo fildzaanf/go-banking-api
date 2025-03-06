@@ -1,4 +1,8 @@
-CREATE DATABASE banking_services;
+DROP DATABASE gobankdb;
+CREATE DATABASE gobankdb;
+
+CREATE TYPE account_status_enum AS ENUM ('active', 'inactive');
+CREATE TYPE transaction_type_enum AS ENUM ('deposit', 'withdraw', 'none');
 
 CREATE TABLE customers (
     id VARCHAR(50) PRIMARY KEY,
@@ -13,7 +17,7 @@ CREATE TABLE accounts (
     customer_id VARCHAR(50) NOT NULL UNIQUE,
     account_number VARCHAR(20) UNIQUE NOT NULL,
     balance DECIMAL(15,2) DEFAULT 0.00 NOT NULL,
-    status account_status NOT NULL DEFAULT 'inactive', 
+    status account_status_enum NOT NULL DEFAULT 'inactive', 
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
@@ -28,9 +32,6 @@ CREATE TABLE transactions (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
 );
-
-CREATE TYPE account_status_enum AS ENUM ('active', 'inactive');
-CREATE TYPE transaction_type_enum AS ENUM ('deposit', 'withdraw', 'none');
 
 
 CREATE INDEX idx_customers_nik ON customers(nik);
